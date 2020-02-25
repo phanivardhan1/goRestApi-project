@@ -30,18 +30,18 @@ type truck struct {
 	load        int
 }
 
-func (car *car) getVehicleType() string {
+func (car car) getVehicleType() string {
 	return car.vehicletype
 }
-func (truck *truck) getVehicleType() string {
+func (truck truck) getVehicleType() string {
 	return truck.vehicletype
 }
 
-func (car *car) getVehicleIdNumber() int {
+func (car car) getVehicleIdNumber() int {
 	return car.vin
 }
 
-func (truck *truck) getVehicleIdNumber() int {
+func (truck truck) getVehicleIdNumber() int {
 	return truck.vin
 }
 
@@ -143,6 +143,7 @@ func main() {
 	mux.HandleFunc("/home", welcome)
 	mux.HandleFunc("/getAllvehicles", getAllvehicles)
 	mux.HandleFunc("/getvehiclesofmake", getvehiclesofmake)
+	mux.HandleFunc("/getallvehiclesofmake", getAllVehiclesofMake)
 
 	http.ListenAndServe(":8080", mux)
 }
@@ -151,9 +152,7 @@ func welcome(res http.ResponseWriter, req *http.Request) {
 
 }
 
-func getAllvehicles(res http.ResponseWriter, req *http.Request) {
-
-	r := req.URL.Query().Get("vehicle")
+func getvehicles() map[string]interface{} {
 
 	c := make(chan []car)
 	d := make(chan []truck)
@@ -161,13 +160,19 @@ func getAllvehicles(res http.ResponseWriter, req *http.Request) {
 	go carslist(c)
 	go trucklist(d)
 	carlist, trucklist := <-c, <-d
-	m["cars"] = carlist
-	m["trucks"] = trucklist
+	m["car"] = carlist
+	m["truck"] = trucklist
 
+	return m
+}
+func getAllvehicles(res http.ResponseWriter, req *http.Request) {
+
+	r := req.URL.Query().Get("vehicle")
+	m := getvehicles()
 	if r == "car" {
-		fmt.Println(m["cars"])
+		fmt.Println(m["car"])
 	} else if r == "truck" {
-		fmt.Println(m["trucks"])
+		fmt.Println(m["truck"])
 	}
 }
 
@@ -176,6 +181,55 @@ func getvehiclesofmake(res http.ResponseWriter, req *http.Request) {
 	p1 := req.URL.Query().Get("vehicle")
 	p2 := req.URL.Query().Get("make")
 
+	//var vehiclesofmake []car
 	fmt.Println(p1, p2)
+
+	m := getvehicles()
+	//fmt.Println(m)
+	if p1 == "car" {
+		vehiclelist := m[p1]
+		for _, v := range vehiclelist.([]car) {
+			if v.make == p2 {
+				fmt.Println(v)
+			}
+
+		}
+	} else if p1 == "truck" {
+		vehiclelist := m[p1]
+		for _, v := range vehiclelist.([]truck) {
+			if v.make == p2 {
+				fmt.Println(v)
+			}
+
+		}
+
+	}
+
+}
+
+func getAllVehiclesofMake(res http.ResponseWriter, req *http.Request) {
+
+	p1 := req.URL.Query().Get("make")
+	fmt.Println("param 1 is", p1)
+	m := getvehicles()
+	fmt.Println(m)
+	var vehicleofmake []vehicles
+
+	vehicleslist, ok := m["car"]
+	if ok == true {
+		for _, v := range vehicleslist.([]car) {
+			if v.make == p1 {
+				vehicleofmake = append(vehicleofmake, v)
+			}
+		}
+	}
+	vehiclelist, ok := m["truck"]
+	if ok == true {
+		for _, v := range vehiclelist.([]truck) {
+			if v.make == p1 {
+				vehicleofmake = append(vehicleofmake, v)
+			}
+		}
+	}
 
 }
