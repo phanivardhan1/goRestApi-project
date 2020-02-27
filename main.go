@@ -1,10 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
 type vehicles interface {
@@ -137,16 +141,23 @@ func trucklist(c chan []truck) {
 	c <- trucklist
 }
 
+//###############################################################################################
 func main() {
 	fmt.Println("Hi this is a rest Application")
+
+	//fmt.Println(dao.Getcarslist())
+
 	mux := mux.NewRouter()
 	mux.HandleFunc("/home", welcome)
 	mux.HandleFunc("/getAllvehicles", getAllvehicles)
 	mux.HandleFunc("/getvehiclesofmake", getvehiclesofmake)
 	mux.HandleFunc("/getallvehiclesofmake", getAllVehiclesofMake)
-
+	mux.HandleFunc("/getallvehiclesinrange", getallvehiclesinrange)
+	mux.HandleFunc("/setVehicle", setVehicle)
 	http.ListenAndServe(":8080", mux)
 }
+
+// #############################################################################################
 func welcome(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("welcome function")
 
@@ -232,4 +243,46 @@ func getAllVehiclesofMake(res http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+}
+
+func setVehicle(res http.ResponseWriter, req *http.Request) {
+	fmt.Println("set method")
+	m := make(map[string]string)
+	//m := car{}
+	body, err := ioutil.ReadAll(req.Body)
+	json.Unmarshal(body, &m)
+	if err != nil {
+
+		fmt.Println(m)
+	}
+	fmt.Println(m)
+}
+
+func getallvehiclesinrange(res http.ResponseWriter, req *http.Request) {
+
+	p1, _ := strconv.Atoi(req.URL.Query().Get("start"))
+	p2, _ := strconv.Atoi(req.URL.Query().Get("end"))
+
+	m := getvehicles()
+	//fmt.Println(m)
+	var vehicleofmake []vehicles
+
+	vehicleslist, ok := m["car"]
+	if ok == true {
+		for _, v := range vehicleslist.([]car) {
+			if v.year <= p2 && v.year >= p1 {
+				vehicleofmake = append(vehicleofmake, v)
+			}
+		}
+	}
+	vehiclelist, ok := m["truck"]
+	if ok == true {
+		for _, v := range vehiclelist.([]truck) {
+			if v.year <= p2 && v.year >= p1 {
+				vehicleofmake = append(vehicleofmake, v)
+			}
+		}
+	}
+
+	fmt.Println(vehicleofmake)
 }
