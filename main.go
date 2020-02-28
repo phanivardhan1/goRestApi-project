@@ -7,136 +7,101 @@ import (
 	"net/http"
 	"strconv"
 
+	"./models"
+
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
-type vehicles interface {
-	getVehicleType() string
-	getVehicleIdNumber() int
-}
-
-type car struct {
-	vin         int
-	vehicletype string
-	make        string
-	model       string
-	year        int
-	mileage     int
-}
-
-type truck struct {
-	vin         int
-	vehicletype string
-	make        string
-	model       string
-	year        int
-	load        int
-}
-
-func (car car) getVehicleType() string {
-	return car.vehicletype
-}
-func (truck truck) getVehicleType() string {
-	return truck.vehicletype
-}
-
-func (car car) getVehicleIdNumber() int {
-	return car.vin
-}
-
-func (truck truck) getVehicleIdNumber() int {
-	return truck.vin
-}
-
-func carslist(c chan []car) {
-	var carslist []car
-	c1 := car{
-		vin:         1000,
-		vehicletype: "sedan",
-		make:        "toyota",
-		model:       "camry",
-		year:        2016,
-		mileage:     26,
+func carslist(c chan []models.Car) {
+	var carslist []models.Car
+	c1 := models.Car{
+		Vin:         1003,
+		Vehicletype: "sedan",
+		Make:        "mazda",
+		Model:       "cx3",
+		Year:        2019,
+		Mileage:     27,
 	}
-	c2 := car{
-		vin:         1001,
-		vehicletype: "sedan",
-		make:        "Honda",
-		model:       "civic",
-		year:        2016,
-		mileage:     32,
+	c2 := models.Car{
+		Vin:         1001,
+		Vehicletype: "sedan",
+		Make:        "Honda",
+		Model:       "civic",
+		Year:        2016,
+		Mileage:     32,
 	}
-	c3 := car{
-		vin:         1002,
-		vehicletype: "suv",
-		make:        "toyota",
-		model:       "rav4",
-		year:        2018,
-		mileage:     26,
+	c3 := models.Car{
+		Vin:         1002,
+		Vehicletype: "suv",
+		Make:        "toyota",
+		Model:       "rav4",
+		Year:        2018,
+		Mileage:     26,
 	}
-	c4 := car{
-		vin:         1003,
-		vehicletype: "sedan",
-		make:        "mazda",
-		model:       "cx3",
-		year:        2019,
-		mileage:     27,
+	c4 := models.Car{
+		Vin:         1003,
+		Vehicletype: "sedan",
+		Make:        "mazda",
+		Model:       "cx3",
+		Year:        2019,
+		Mileage:     27,
 	}
-	c5 := car{
-		vin:         1004,
-		vehicletype: "suv",
-		make:        "honda",
-		model:       "pilot",
-		year:        2020,
-		mileage:     25,
+	c5 := models.Car{
+		Vin:         1004,
+		Vehicletype: "suv",
+		Make:        "honda",
+		Model:       "pilot",
+		Year:        2020,
+		Mileage:     25,
 	}
 	carslist = append(carslist, c1, c2, c3, c4, c5)
 	c <- carslist
 }
 
-func trucklist(c chan []truck) {
-	var trucklist []truck
-	t1 := truck{
-		vin:         2000,
-		vehicletype: "10wheel",
-		make:        "toyota",
-		model:       "camrytruck",
-		year:        2016,
-		load:        18,
+func trucklist(c chan []models.Truck) {
+	var trucklist []models.Truck
+	t1 := models.Truck{
+		Vin:         2000,
+		Vehicletype: "10wheel",
+		Make:        "toyota",
+		Model:       "camrytruck",
+		Year:        2016,
+		Load:        18,
 	}
-	t2 := truck{
-		vin:         2001,
-		vehicletype: "10wheel",
-		make:        "Honda",
-		model:       "civictruck",
-		year:        2017,
-		load:        32,
+	t2 := models.Truck{
+		Vin:         2001,
+		Vehicletype: "10wheel",
+		Make:        "Honda",
+		Model:       "civictruck",
+		Year:        2017,
+		Load:        32,
 	}
-	t3 := truck{
-		vin:         2002,
-		vehicletype: "20wheel",
-		make:        "toyota",
-		model:       "rav4truck",
-		year:        2018,
-		load:        17,
+	t3 := models.Truck{
+		Vin:         2002,
+		Vehicletype: "20wheel",
+		Make:        "toyota",
+		Model:       "rav4truck",
+		Year:        2018,
+		Load:        17,
 	}
-	t4 := truck{
-		vin:         2003,
-		vehicletype: "20wheel",
-		make:        "mazda",
-		model:       "cx3truck",
-		year:        2019,
-		load:        21,
+	t4 := models.Truck{
+		Vin:         2003,
+		Vehicletype: "20wheel",
+		Make:        "mazda",
+		Model:       "cx3truck",
+		Year:        2019,
+		Load:        21,
 	}
-	t5 := truck{
-		vin:         2004,
-		vehicletype: "20wheel",
-		make:        "honda",
-		model:       "pilottruck",
-		year:        2020,
-		load:        21,
+	t5 := models.Truck{
+		Vin:         2004,
+		Vehicletype: "20wheel",
+		Make:        "honda",
+		Model:       "pilottruck",
+		Year:        2020,
+		Load:        21,
 	}
+
 	trucklist = append(trucklist, t1, t2, t3, t4, t5)
 	c <- trucklist
 }
@@ -145,7 +110,7 @@ func trucklist(c chan []truck) {
 func main() {
 	fmt.Println("Hi this is a rest Application")
 
-	//fmt.Println(dao.Getcarslist())
+	//dao.Insertcar()
 
 	mux := mux.NewRouter()
 	mux.HandleFunc("/home", welcome)
@@ -165,8 +130,8 @@ func welcome(res http.ResponseWriter, req *http.Request) {
 
 func getvehicles() map[string]interface{} {
 
-	c := make(chan []car)
-	d := make(chan []truck)
+	c := make(chan []models.Car)
+	d := make(chan []models.Truck)
 	m := make(map[string]interface{})
 	go carslist(c)
 	go trucklist(d)
@@ -199,16 +164,16 @@ func getvehiclesofmake(res http.ResponseWriter, req *http.Request) {
 	//fmt.Println(m)
 	if p1 == "car" {
 		vehiclelist := m[p1]
-		for _, v := range vehiclelist.([]car) {
-			if v.make == p2 {
+		for _, v := range vehiclelist.([]models.Car) {
+			if v.Make == p2 {
 				fmt.Println(v)
 			}
 
 		}
 	} else if p1 == "truck" {
 		vehiclelist := m[p1]
-		for _, v := range vehiclelist.([]truck) {
-			if v.make == p2 {
+		for _, v := range vehiclelist.([]models.Truck) {
+			if v.Make == p2 {
 				fmt.Println(v)
 			}
 
@@ -224,20 +189,20 @@ func getAllVehiclesofMake(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("param 1 is", p1)
 	m := getvehicles()
 	fmt.Println(m)
-	var vehicleofmake []vehicles
+	var vehicleofmake []models.Vehicles
 
 	vehicleslist, ok := m["car"]
 	if ok == true {
-		for _, v := range vehicleslist.([]car) {
-			if v.make == p1 {
+		for _, v := range vehicleslist.([]models.Car) {
+			if v.Make == p1 {
 				vehicleofmake = append(vehicleofmake, v)
 			}
 		}
 	}
 	vehiclelist, ok := m["truck"]
 	if ok == true {
-		for _, v := range vehiclelist.([]truck) {
-			if v.make == p1 {
+		for _, v := range vehiclelist.([]models.Truck) {
+			if v.Make == p1 {
 				vehicleofmake = append(vehicleofmake, v)
 			}
 		}
@@ -248,12 +213,21 @@ func getAllVehiclesofMake(res http.ResponseWriter, req *http.Request) {
 func setVehicle(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("set method")
 	m := make(map[string]string)
-	//m := car{}
+	car1 := &models.Car{}
 	body, err := ioutil.ReadAll(req.Body)
 	json.Unmarshal(body, &m)
-	if err != nil {
+	if err == nil {
 
 		fmt.Println(m)
+		car1.Vin, _ = strconv.Atoi(m["Vin"])
+		car1.Vehicletype = m["vehicletype"]
+		car1.Make = m["make"]
+		car1.Model = m["model"]
+		car1.Year, _ = strconv.Atoi(m["year"])
+		car1.Mileage, _ = strconv.Atoi(m["mileage"])
+
+		models.InsertCar(car1)
+
 	}
 	fmt.Println(m)
 }
@@ -264,21 +238,21 @@ func getallvehiclesinrange(res http.ResponseWriter, req *http.Request) {
 	p2, _ := strconv.Atoi(req.URL.Query().Get("end"))
 
 	m := getvehicles()
-	//fmt.Println(m)
-	var vehicleofmake []vehicles
+	fmt.Println(m)
+	var vehicleofmake []models.Vehicles
 
 	vehicleslist, ok := m["car"]
 	if ok == true {
-		for _, v := range vehicleslist.([]car) {
-			if v.year <= p2 && v.year >= p1 {
+		for _, v := range vehicleslist.([]models.Car) {
+			if v.Year <= p2 && v.Year >= p1 {
 				vehicleofmake = append(vehicleofmake, v)
 			}
 		}
 	}
 	vehiclelist, ok := m["truck"]
 	if ok == true {
-		for _, v := range vehiclelist.([]truck) {
-			if v.year <= p2 && v.year >= p1 {
+		for _, v := range vehiclelist.([]models.Truck) {
+			if v.Year <= p2 && v.Year >= p1 {
 				vehicleofmake = append(vehicleofmake, v)
 			}
 		}
