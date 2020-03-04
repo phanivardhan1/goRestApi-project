@@ -11,7 +11,7 @@ var Db *gorm.DB
 
 func init() {
 	Db = gormsess()
-	Db.Debug().AutoMigrate(&Car{})
+	Db.Debug().AutoMigrate(&Car{}, &Truck{})
 
 }
 
@@ -52,16 +52,68 @@ const (
 	dbname   = "postgres"
 )
 
+func (car Car) getVehicleType() string {
+	return car.Vehicletype
+}
+func (truck Truck) getVehicleType() string {
+	return truck.Vehicletype
+}
+
+func (car Car) getVehicleIdNumber() int {
+	return car.Vin
+}
+
+func (truck Truck) getVehicleIdNumber() int {
+	return truck.Vin
+}
+
 func Daowelcome() {
 	fmt.Println("this is dao function")
 }
 
 func InsertCar(car *Car) {
-
-	db := Db.Create(car)
-
+	Db.Create(car)
 	fmt.Println("record inserted ")
 
-	db.Close()
+}
 
+func Getcars() []Car {
+	var Cars []Car
+	Db.Find(&Cars)
+	return Cars
+
+}
+func DeleteCar(vin int) {
+
+	Db.Where("vin = ?", vin).Delete(Car{})
+	fmt.Println("the car is deleted")
+}
+
+func GetCarByVin(vin int) Cars {
+	var car Cars
+	Db.Where("vin = ?", vin).Find(&car)
+	fmt.Println("get carby Id", vin)
+	return car
+}
+
+func InsertTruck(truck *Truck) {
+	Db.Create(truck)
+	fmt.Println("record inserted ")
+}
+
+func GetTrucksFromDb() []Truck {
+	var truck []Truck
+	Db.Find(&truck)
+
+	fmt.Println(truck)
+	return truck
+
+}
+
+func GetTucksByVinFromDb(vin int) Truck {
+	var truck Truck
+	Db.Where("vin = ?", vin).Find(&truck)
+
+	fmt.Println(truck)
+	return truck
 }
