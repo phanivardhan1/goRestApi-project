@@ -11,7 +11,7 @@ var Db *gorm.DB
 
 func init() {
 	Db = gormsess()
-	Db.Debug().AutoMigrate(&Car{}, &Truck{})
+	Db.Debug().AutoMigrate(&Car{}, &Truck{}, &Address{}, &Preference{}, &User{})
 
 }
 
@@ -89,8 +89,8 @@ func DeleteCar(vin int) {
 	fmt.Println("the car is deleted")
 }
 
-func GetCarByVin(vin int) Cars {
-	var car Cars
+func GetCarByVin(vin int) Car {
+	var car Car
 	Db.Where("vin = ?", vin).Find(&car)
 	fmt.Println("get carby Id", vin)
 	return car

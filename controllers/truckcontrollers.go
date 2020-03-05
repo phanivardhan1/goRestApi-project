@@ -35,7 +35,8 @@ func InserTruck(res http.ResponseWriter, req *http.Request) {
 }
 
 func GetTrucks(res http.ResponseWriter, req *http.Request) {
-	models.GetTrucksFromDb()
+	trucks := models.GetTrucksFromDb()
+	utilities.RespondJSON(res, 200, trucks)
 }
 
 func GetTrucksByVin(res http.ResponseWriter, req *http.Request) {
@@ -46,4 +47,8 @@ func GetTrucksByVin(res http.ResponseWriter, req *http.Request) {
 
 	utilities.RespondJSON(res, 200, truck)
 
+}
+func UpdateTrucks(res http.ResponseWriter, req *http.Request) {
+	//truck := models.UpdateTruckInDb()
+	//utilities.RespondJSON(res, 200, truck)
 }

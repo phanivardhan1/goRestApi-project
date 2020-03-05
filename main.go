@@ -29,6 +29,8 @@ func main() {
 	mux.HandleFunc("/setTrucks", controllers.InserTruck).Methods("POST")
 	mux.HandleFunc("/getTrucks", controllers.GetTrucks).Methods("GET")
 	mux.HandleFunc("/getTrucksByVin", controllers.GetTrucksByVin).Methods("GET")
+	mux.HandleFunc("/setUsers", controllers.InsertUsers).Methods("POST")
+	//mux.HandleFunc("/updateTruck", controllers.UpdateTruck).Methods("PUT")
 	http.ListenAndServe(":8080", mux)
 }
 
