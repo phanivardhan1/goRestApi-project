@@ -23,15 +23,15 @@ type User struct {
 	FirstName  string `gorm:"type:varchar(100)"`
 	LastName   string `gorm:"type:varchar(100)"`
 	Email      string `gorm:"type:varchar(100);unique_index"`
-	Address    `gorm:"foreignkey:AddressId"`
-	Preference `gorm:"foreignkey:PrefernceId"`
+	Address    `gorm:"association_foreignkey:AddressId"`
+	Preference `gorm:"association_foreignkey:PrefernceId"`
 }
 
 type Address struct {
 	AddressId int    `gorm:"primary_key;AUTO_INCREMENT"`
 	Street    string `gorm:"type:varchar(100)"`
 	City      string `gorm:"type:varchar(100)"`
-	state     string `gorm:"type:varchar(100)"`
+	State     string `gorm:"type:varchar(100)"`
 	Zipcode   string `gorm:"type:varchar(100)"`
 }
 type Preference struct {

@@ -117,3 +117,39 @@ func GetTucksByVinFromDb(vin int) Truck {
 	fmt.Println(truck)
 	return truck
 }
+
+func InserUsersInDb(user *User) {
+	Db.Create(user)
+	fmt.Println("user inserted")
+}
+
+func GetUsersFromDb() (users []User) {
+	Db.Find(&users)
+	return users
+}
+
+func GetCarsFromDbByUserPreference(firstname, lastname, email string) {
+	rows, err := Db.Table("users").Where("email = ? and last_name = ?", email, lastname).Select("userid,make,startyear,end_year").Rows()
+	var userid, make string
+	var startyear, endyear int
+	var cars []Car
+	if err == nil {
+		for rows.Next() {
+			rows.Scan(&userid, &make, &startyear, &endyear)
+			fmt.Println(userid, make, startyear, endyear)
+		}
+	} else {
+		fmt.Println(err.Error())
+	}
+
+	func() {
+		Db.Find(&cars)
+	}()
+
+	for _, v := range cars {
+		if v.Make == make && (v.Year <= endyear && v.Year >= startyear) {
+			fmt.Println(v)
+		}
+	}
+
+}

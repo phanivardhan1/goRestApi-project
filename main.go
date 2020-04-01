@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-//###############################################################################################
+//##############################################################	#################################
 func main() {
 	fmt.Println("Hi this is a rest Application")
 
@@ -30,6 +30,8 @@ func main() {
 	mux.HandleFunc("/getTrucks", controllers.GetTrucks).Methods("GET")
 	mux.HandleFunc("/getTrucksByVin", controllers.GetTrucksByVin).Methods("GET")
 	mux.HandleFunc("/setUsers", controllers.InsertUsers).Methods("POST")
+	mux.HandleFunc("/getUsers", controllers.GetUsers).Methods("GET")
+	mux.HandleFunc("/getCarsByUserPrefernce", controllers.GetCarsByUserPreference).Methods("GET")
 	//mux.HandleFunc("/updateTruck", controllers.UpdateTruck).Methods("PUT")
 	http.ListenAndServe(":8080", mux)
 }
